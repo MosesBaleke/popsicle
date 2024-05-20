@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # Printing the response for demonstration
     response_body = client.get("/custom").json()
     print(response_body)  # Should print the app title or any custom data
-    
+    # testing again
     # Run the FastAPI app using uvicorn
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
