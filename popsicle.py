@@ -52,3 +52,65 @@ if __name__ == "__main__":
     # Run the FastAPI app using uvicorn
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
+
+    import os
+
+def lambda_handler(event, context):
+    # The path to the mounted EFS
+    efs_path = '/mnt/efs'
+    
+    try:
+        # Ensure the EFS mount point exists
+        if not os.path.exists(efs_path):
+            raise Exception(f"The EFS path {efs_path} does not exist.")
+        
+        # List all files in the EFS directory
+        files = os.listdir(efs_path)
+        
+        return {
+            'statusCode': 200,
+            'body': {
+                'files': files
+            }
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': str(e)
+        }
+
+
+import os
+
+def lambda_handler(event, context):
+    # The path to the mounted EFS
+    efs_path = '/mnt/efs'
+    
+    # The name of the text file to create
+    file_name = 'sample.txt'
+    
+    # The full path of the text file
+    file_path = os.path.join(efs_path, file_name)
+    
+    # The content to write to the text file
+    content = "Hello, this is a sample text file stored on EFS."
+
+    try:
+        # Ensure the EFS mount point exists
+        if not os.path.exists(efs_path):
+            raise Exception(f"The EFS path {efs_path} does not exist.")
+        
+        # Write the content to the text file
+        with open(file_path, 'w') as file:
+            file.write(content)
+        
+        return {
+            'statusCode': 200,
+            'body': f"File '{file_name}' created successfully at {efs_path}."
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': str(e)
+        }
