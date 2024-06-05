@@ -114,3 +114,11 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': str(e)
         }
+
+try:
+        # Use SQLAlchemy core to execute raw SQL
+        result = await session.execute(text(f"SELECT nextval('{table_name}_id_seq')"))
+        next_val = result.scalar_one()
+        return {"nextval": next_val}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
