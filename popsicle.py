@@ -115,10 +115,22 @@ def lambda_handler(event, context):
             'body': str(e)
         }
 
-try:
-        # Use SQLAlchemy core to execute raw SQL
-        result = await session.execute(text(f"SELECT nextval('{table_name}_id_seq')"))
-        next_val = result.scalar_one()
-        return {"nextval": next_val}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+from datetime import datetime
+
+def validate_date_format(date_str):
+    try:
+        # Parse the date string with the format that includes microseconds
+        date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S.%f")
+    except ValueError:
+        # If parsing with microseconds fails, try without microseconds
+        try:
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            # If both parsing attempts fail, the format is incorrect
+            return False
+        
+        # If parsing succeeds without microseconds, check if it matches the desired format
+        return date_str == date_obj.strftime("%Y-%m-%d %H:%M:%S")
+
+    # If parsing succeeds with microseconds, the format is incorrect
+    return False
