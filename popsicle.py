@@ -134,3 +134,41 @@ def validate_date_format(date_str):
 
     # If parsing succeeds with microseconds, the format is incorrect
     return False
+
+
+import requests
+import json
+
+def call_aws_api(api_url, bearer_token, payload):
+    try:
+        # Define headers including the bearer token and content type
+        headers = {
+            "Authorization": f"Bearer {bearer_token}",
+            "Content-Type": "application/json"
+        }
+
+        # Make the API call with headers and payload
+        response = requests.post(api_url, headers=headers, json=payload)
+        
+        # Raise an exception if the request was unsuccessful
+        response.raise_for_status()
+        
+        # Parse the JSON response
+        data = response.json()
+        
+        # Print out the data
+        print(data)
+        
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+    except Exception as err:
+        print(f"Other error occurred: {err}")
+
+# Example usage
+api_url = "https://your-api-id.execute-api.region.amazonaws.com/your-stage/your-resource"
+bearer_token = "your_bearer_token_here"
+payload = {
+    "key1": "value1",
+    "key2": "value2"
+}
+call_aws_api(api_url, bearer_token, payload)
