@@ -172,3 +172,20 @@ payload = {
     "key2": "value2"
 }
 call_aws_api(api_url, bearer_token, payload)
+
+#!/bin/bash
+
+# Define the error message parameter
+error_message="$1"
+
+# Define other parameters for the email
+subject="Error Notification"
+recipient=""
+sender=""
+body="An error occurred during the process:\n\n$error_message"
+
+# Send the email using AWS SES
+aws ses send-email \
+    --from "$sender" \
+    --destination "ToAddresses=$recipient" \
+    --message "Subject={Data=$subject,Charset=utf-8},Body={Text={Data=$body,Charset=utf-8}}"
