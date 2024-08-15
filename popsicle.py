@@ -189,3 +189,13 @@ aws ses send-email \
     --from "$sender" \
     --destination "ToAddresses=$recipient" \
     --message "Subject={Data=$subject,Charset=utf-8},Body={Text={Data=$body,Charset=utf-8}}"
+
+
+# Construct the SQL query to set max_wal_size
+        query = sql.SQL("ALTER SYSTEM SET max_wal_size = %s;").format(sql.Identifier(f"{size_gb}GB"))
+
+        # Execute the SQL query
+        cur.execute(query, [f"{size_gb}GB"])
+
+        # Reload the configuration to apply changes
+        cur.execute("SELECT pg_reload_conf();")
