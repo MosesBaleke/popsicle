@@ -199,3 +199,38 @@ aws ses send-email \
 
         # Reload the configuration to apply changes
         cur.execute("SELECT pg_reload_conf();")
+
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public class PostgresCopyExample {
+    public static void main(String[] args) {
+        String url = "jdbc:postgresql://localhost:5432/yourdatabase";
+        String user = "yourusername";
+        String password = "yourpassword";
+
+        // Path to your pipe-delimited file
+        String filePath = "/path/to/your/file.txt";
+
+        // SQL COPY command with pipe delimiter
+        String copyCommand = "COPY your_table_name FROM ? WITH (FORMAT csv, DELIMITER '|', HEADER true)";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement pstmt = conn.prepareStatement(copyCommand)) {
+
+            // Set the file path parameter
+            pstmt.setString(1, filePath);
+
+            // Execute the COPY command
+            pstmt.execute();
+
+            System.out.println("Data imported successfully.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
