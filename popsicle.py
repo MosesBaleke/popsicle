@@ -234,3 +234,17 @@ public class PostgresCopyExample {
         }
     }
 }
+SELECT
+    t.relname AS table_name,
+    l.locktype,
+    l.mode,
+    l.granted,
+    l.pid,
+    a.query,
+    a.state
+FROM pg_locks l
+JOIN pg_class t ON l.relation = t.oid
+JOIN pg_stat_activity a ON l.pid = a.pid
+WHERE t.relname = 'your_table_name';
+
+
