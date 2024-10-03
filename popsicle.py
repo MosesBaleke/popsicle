@@ -246,5 +246,54 @@ FROM pg_locks l
 JOIN pg_class t ON l.relation = t.oid
 JOIN pg_stat_activity a ON l.pid = a.pid
 WHERE t.relname = 'your_table_name';
+import pytest
+from unittest.mock import MagicMock
+from fastapi import Request
+from sqlalchemy.orm import Session
+from myapp import ToggleGrid  # Adjust this import to match your project structure
 
+def test_get_toggle_status(mocker):
+    # Mock the request and session
+    mock_request = MagicMock(spec=Request)
+    mock_session = MagicMock(spec=Session)
+    
+    # Mock the database instance in request object
+    mock_db_instance = MagicMock()
+    mock_request.app.databaseInstance = {
+        "fatr_tggl_stts": {"instance": mock_db_instance}
+    }
+    
+    # Mock the table and column references
+    mock_table = MagicMock()
+    mock_db_instance.meta = {"fatr_tggl_stts": {"instance": mock_table}}
+
+    # Mock the query and return value
+    mock_query = mock_session.query.return_value
+    mock_query.filter.return_value.first.return_value = {
+        "FATR_STTS_ID": 1,
+        "FATR_ID": 123,
+        "IS_ON_FL": True,
+        "UPDT_BY_USER_ID": "user123",
+        "LAST_UPDT_TS": "2024-10-03 12:00:00"
+    }
+    
+    # Create instance of ToggleGrid
+    toggle_grid = ToggleGrid(mock_request)
+
+    # Call the get_toggle_status method
+    result = toggle_grid.get_toggle_status(mock_session)
+
+    # Assert that the session's query and other methods are called correctly
+    mock_session.query.assert_called_once()
+    mock_query.order_by.assert_called_once()
+    mock_query.first.assert_called_once()
+
+    # Verify the result
+    assert result == {
+        "FATR_STTS_ID": 1,
+        "FATR_ID": 123,
+        "IS_ON_FL": True,
+        "UPDT_BY_USER_ID": "user123",
+        "LAST_UPDT_TS": "2024-10-03 12:00:00"
+    }
 
