@@ -296,4 +296,62 @@ def test_get_toggle_status(mocker):
         "UPDT_BY_USER_ID": "user123",
         "LAST_UPDT_TS": "2024-10-03 12:00:00"
     }
+    
+    
+    import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
+public class LogFileChecker {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        File logFile = new File("path/to/your/logfile.log");
+        
+        String lastLine = null;
+        String currentLine;
+        int stableCount = 0;
+        int requiredStableIterations = 5; // Number of stable iterations to confirm no more data
+
+        while (true) {
+            currentLine = readLastLine(logFile);
+            if (currentLine != null && currentLine.equals(lastLine)) {
+                stableCount++;
+                System.out.println("Stable count: " + stableCount);
+                if (stableCount >= requiredStableIterations) {
+                    System.out.println("No new data has been added to the log file.");
+                    break;
+                }
+            } else {
+                stableCount = 0; // Reset if a new line is detected
+                lastLine = currentLine;
+                System.out.println("New data detected in the log file.");
+            }
+            // Wait for a few seconds before checking again
+            Thread.sleep(3000);
+        }
+    }
+
+    private static String readLastLine(File file) throws IOException {
+        String lastLine = null;
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
+            long fileLength = randomAccessFile.length() - 1;
+            if (fileLength < 0) {
+                return null;
+            }
+
+            randomAccessFile.seek(fileLength);
+            int readByte;
+            while ((readByte = randomAccessFile.readByte()) != '\n') {
+                fileLength--;
+                randomAccessFile.seek(fileLength);
+                if (fileLength == 0) {
+                    break;
+                }
+            }
+
+            lastLine = randomAccessFile.readLine();
+        }
+        return lastLine;
+    }
+}
+    
 
