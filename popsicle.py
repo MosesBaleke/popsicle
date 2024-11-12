@@ -353,5 +353,70 @@ public class LogFileChecker {
         return lastLine;
     }
 }
+
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+public class LogFileChecker {
+    private static String lastLine = null;
+    private static int stableCount = 0;
+    private static final int REQUIRED_STABLE_ITERATIONS = 5;
     
+    public static void main(String[] args) {
+        File logFile = new File("path/to/your/logfile.log");
+        
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        
+        Runnable checkTask = () -> {
+            try {
+                String currentLine = readLastLine(logFile);
+                if (currentLine != null && currentLine.equals(lastLine)) {
+                    stableCount++;
+                    System.out.println("Stable count: " + stableCount);
+                    if (stableCount >= REQUIRED_STABLE_ITERATIONS) {
+                        System.out.println("No new data has been added to the log file.");
+                        scheduler.shutdown(); // Stop the scheduler once stable
+                    }
+                } else {
+                    stableCount = 0; // Reset if a new line is detected
+                    lastLine = currentLine;
+                    System.out.println("New data detected in the log file.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
+        
+        // Schedule the checkTask to run every 3 seconds
+        scheduler.scheduleAtFixedRate(checkTask, 0, 3, TimeUnit.SECONDS);
+    }
+
+    private static String readLastLine(File file) throws IOException {
+        String lastLine = null;
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
+            long fileLength = randomAccessFile.length() - 1;
+            if (fileLength < 0) {
+                return null;
+            }
+
+            randomAccessFile.seek(fileLength);
+            int readByte;
+            while ((readByte = randomAccessFile.readByte()) != '\n') {
+                fileLength--;
+                randomAccessFile.seek(fileLength);
+                if (fileLength == 0) {
+                    break;
+                }
+            }
+
+            lastLine = randomAccessFile.readLine();
+        }
+        return lastLine;
+    }
+}
 
