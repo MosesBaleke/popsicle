@@ -444,5 +444,47 @@ def test_stop_task():
     assert response['task']['lastStatus'] == 'STOPPED'
     
     
+    from moto import mock_ecs
+import boto3
+from your_module import stop_task  # Replace with your actual function
+
+@mock_ecs
+def test_stop_task():
+    # Set up mock ECS environment
+    client = boto3.client('ecs', region_name='us-east-1')
+
+    # Create a cluster
+    cluster_name = "test-cluster"
+    client.create_cluster(clusterName=cluster_name)
+
+    # Register a task definition
+    client.register_task_definition(
+        family="test-task-def",
+        containerDefinitions=[
+            {
+                "name": "test-container",
+                "image": "test-image",
+                "memory": 128,
+                "cpu": 128,
+            }
+        ],
+    )
+
+    # Run a task (use the registered task definition)
+    task_response = client.run_task(
+        cluster=cluster_name,
+        taskDefinition="test-task-def"
+    )
+    task_arn = task_response["tasks"][0]["taskArn"]
+
+    # Stop the task
+    response = stop_task(cluster_name, task_arn)
+
+    # Validate the response
+    assert response['task']['taskArn'] == task_arn
+    assert response['task']['lastStatus'] == 'STOPPED'
+    
+    
+    
 }
 
