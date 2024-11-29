@@ -418,5 +418,31 @@ public class LogFileChecker {
         }
         return lastLine;
     }
+    
+    from moto import mock_ecs
+import boto3
+import pytest
+from your_module import stop_task  # Replace with the path to your function
+
+@mock_ecs
+def test_stop_task():
+    # Set up mock ECS environment
+    client = boto3.client('ecs', region_name='us-east-1')
+
+    # Create a cluster and a task
+    cluster_name = "test-cluster"
+    client.create_cluster(clusterName=cluster_name)
+    
+    task_arn = "arn:aws:ecs:us-east-1:123456789012:task/test-task-id"
+    client.run_task(cluster=cluster_name, taskDefinition="test-task-def")
+    
+    # Mock stopping the task
+    response = stop_task(cluster_name, task_arn)
+    
+    # Validate the response
+    assert response['task']['taskArn'] == task_arn
+    assert response['task']['lastStatus'] == 'STOPPED'
+    
+    
 }
 
