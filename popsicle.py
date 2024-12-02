@@ -488,6 +488,58 @@ def test_stop_task():
 os.environ["AWS_ACCESS_KEY_ID"] = "testing"
 os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
 os.environ["AWS_SESSION_TOKEN"] = "testing"
+
+
+import pytest
+import requests
+
+def fetch_task(metadata_url):
+    """Function that fetches task details from the given metadata_url."""
+    response = requests.get(f"{metadata_url}/task")
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"error": f"Failed with status code {response.status_code}"}
+
+def test_fetch_task(monkeypatch):
+    """Test the fetch_task function using monkeypatch to mock requests.get."""
+    # Define a mock response
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            return self.json_data
+
+    def mock_get(url):
+        # Return a mock response depending on the URL
+        if url == "https://example.com/api/task":
+            return MockResponse({
+                "id": "12345",
+                "name": "Sample Task",
+                "status": "pending",
+                "created_at": "2024-12-01T12:00:00Z",
+                "updated_at": "2024-12-01T12:15:00Z",
+                "details": {
+                    "priority": "high",
+                    "assigned_to": "user123",
+                    "due_date": "2024-12-10T12:00:00Z"
+                }
+            }, 200)
+        else:
+            return MockResponse({"error": "Not found"}, 404)
+
+    # Use monkeypatch to replace requests.get with mock_get
+    monkeypatch.setattr(requests, "get", mock_get)
+
+    # Call the function and assert the response
+    metadata_url = "https://example.com/api"
+    result = fetch_task(metadata_url)
+    assert result["id"] == "12345"
+    assert result["name"] == "Sample Task"
+    assert result["status"] == "pending"
+    assert result["details"]["priority"] == "high"
     
 }
 
