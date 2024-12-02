@@ -541,5 +541,26 @@ def test_fetch_task(monkeypatch):
     assert result["status"] == "pending"
     assert result["details"]["priority"] == "high"
     
+    
+    
+    import os
+import pytest
+
+def get_task_id():
+    """Example function that retrieves an environment variable."""
+    ecs_url = os.environ.get('ECS_TASK_METADATA_URL')
+    if ecs_url:
+        return ecs_url
+    return "Environment variable not set"
+
+def test_get_task_id(monkeypatch):
+    """Test the get_task_id function by mocking os.environ.get."""
+    # Mock the environment variable
+    mock_value = "https://example.com/api/task"
+    monkeypatch.setenv("ECS_TASK_METADATA_URL", mock_value)
+
+    # Call the function and assert the result
+    result = get_task_id()
+    assert result == mock_value
 }
 
