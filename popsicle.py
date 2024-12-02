@@ -562,5 +562,15 @@ def test_get_task_id(monkeypatch):
     # Call the function and assert the result
     result = get_task_id()
     assert result == mock_value
+    
+    
+    def mock_get(url):
+    if url == "https://example.com/api/task":
+        return MockResponse({
+            "TaskARN": "arn:aws:ecs:region:account-id:task/task-id"
+        }, 200)
+    return MockResponse({"error": "Not Found"}, 404)
+    
+    
 }
 
