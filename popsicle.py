@@ -571,6 +571,62 @@ def test_get_task_id(monkeypatch):
         }, 200)
     return MockResponse({"error": "Not Found"}, 404)
     
-    
+    import com.microsoft.playwright.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class TableDateSortingValidation {
+    public static void main(String[] args) {
+        // Initialize Playwright
+        try (Playwright playwright = Playwright.create()) {
+            Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+            BrowserContext context = browser.newContext();
+            Page page = context.newPage();
+
+            // Navigate to the page
+            page.navigate("https://example.com");
+
+            // Define the date-time format with milliseconds (adjust the pattern if needed)
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
+            // Locator for table rows
+            Locator rows = page.locator("table tbody tr"); // Adjust the selector to match your table rows
+
+            // Extract text from the third column of each row and parse into LocalDateTime
+            List<LocalDateTime> dateTimes = new ArrayList<>();
+            for (int i = 0; i < rows.count(); i++) {
+                String cellText = rows.nth(i).locator("td:nth-child(3)").textContent(); // Adjust column index (3 for the third column)
+                try {
+                    LocalDateTime dateTime = LocalDateTime.parse(cellText.trim(), formatter);
+                    dateTimes.add(dateTime);
+                } catch (Exception e) {
+                    System.err.println("Failed to parse date: " + cellText);
+                }
+            }
+
+            // Validate ascending order
+            List<LocalDateTime> sortedAsc = new ArrayList<>(dateTimes);
+            Collections.sort(sortedAsc);
+
+            if (dateTimes.equals(sortedAsc)) {
+                System.out.println("The dates are sorted in ascending order.");
+            } else {
+                System.out.println("The dates are NOT sorted in ascending order.");
+            }
+
+            // Validate descending order
+            List<LocalDateTime> sortedDesc = new ArrayList<>(dateTimes);
+            sortedDesc.sort(Collections.reverseOrder());
+
+            if (dateTimes.equals(sortedDesc)) {
+                System.out.println("The dates are sorted in descending order.");
+            } else {
+                System.out.println("The dates are NOT sorted in descending order.");
+            }
+        }
+    }
+}
 }
 
