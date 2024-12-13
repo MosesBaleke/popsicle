@@ -627,6 +627,31 @@ public class TableDateSortingValidation {
             }
         }
     }
+    
+    
+    import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> input = Arrays.asList("[vvvx, vvvx]");
+        List<String> output = new ArrayList<>();
+
+        for (String item : input) {
+            // Remove the surrounding square brackets and spaces
+            String cleaned = item.replaceAll("[\\[\\]]", "").trim();
+            // Split the string by comma and trim each element
+            String[] parts = cleaned.split(",");
+            for (String part : parts) {
+                output.add(part.trim());
+            }
+        }
+
+        // Print the output
+        System.out.println(output); // Output: [vvvx, vvvx]
+    }
+}
 }
 }
 
