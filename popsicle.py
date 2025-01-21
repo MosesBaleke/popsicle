@@ -673,7 +673,42 @@ Took ownership of critical system improvements and QA practices, ensuring timely
 This summary aligns your achievements as a developer with key areas of collaboration, expertise, innovation, and responsibility. Let me know if you’d like further refinements!
     
     
-    
+    import com.microsoft.playwright.*;
+
+public class TableCheck {
+    public static void main(String[] args) {
+        try (Playwright playwright = Playwright.create()) {
+            Browser browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+            BrowserContext context = browser.newContext();
+            Page page = context.newPage();
+
+            // Navigate to the page
+            page.navigate("YOUR_PAGE_URL");
+
+            // Locate the table
+            Locator table = page.locator("table");
+
+            // Locate all rows in the table
+            Locator rows = table.locator("tr");
+
+            // Loop through rows
+            for (int i = 0; i < rows.count(); i++) {
+                Locator row = rows.nth(i);
+                // Locate columns in the current row
+                Locator columns = row.locator("td");
+
+                // Loop through columns
+                for (int j = 0; j < columns.count(); j++) {
+                    String cellText = columns.nth(j).textContent();
+                    // Check if the cell contains the desired text
+                    if (cellText != null && cellText.contains("YOUR_DESIRED_TEXT")) {
+                        System.out.println("Found text in row " + i + ", column " + j);
+                    }
+                }
+            }
+        }
+    }
+}
 
 }
 }
