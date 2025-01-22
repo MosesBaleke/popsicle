@@ -3,7 +3,10 @@ from fastapi.responses import JSONResponse
 from starlette.testclient import TestClient
 from starlette.requests import Request as StarletteRequest
 from starlette.datastructures import Headers, URL
-
+SELECT *
+FROM your_table
+WHERE CURRENT_TIMESTAMP >= start_timestamp
+  AND CURRENT_TIMESTAMP <= end_timestamp;
 app = FastAPI()
 
 # Route for demonstration
