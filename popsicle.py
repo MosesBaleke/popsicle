@@ -709,6 +709,26 @@ public class TableCheck {
                     }
                 }
             }
+            
+            from sqlalchemy import Column, Integer, DateTime, create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+import datetime
+
+Base = declarative_base()
+
+class Record(Base):
+    __tablename__ = 'records'
+
+    id = Column(Integer, primary_key=True)
+    start_ts = Column(DateTime, nullable=False)
+
+# Manually creating an instance
+record = Record(id=1, start_ts=datetime.datetime.utcnow())
+
+# Accessing the attribute
+print(record.start_ts)
+
+            
         }
     }
 }
