@@ -734,6 +734,7 @@ source ~/.bashrc
         }
     }
 }
+dnf install -y java-17-amazon-corretto wget
 
 }
 }
