@@ -728,7 +728,9 @@ record = Record(id=1, start_ts=datetime.datetime.utcnow())
 # Accessing the attribute
 print(record.start_ts)
 
-            
+wget https://github.com/java-decompiler/jd-cli/releases/latest/download/jd-cli.jar -O /usr/local/bin/jd-cli.jar
+echo 'alias jd="java -jar /usr/local/bin/jd-cli.jar"' >> ~/.bashrc
+source ~/.bashrc
         }
     }
 }
