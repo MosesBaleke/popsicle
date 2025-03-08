@@ -751,6 +751,33 @@ BEFORE INSERT ON your_table
 FOR EACH ROW
 EXECUTE FUNCTION set_column_same_as_id();
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+public class DateTimeExample {
+    public static void main(String[] args) {
+        String dateString = "2025-03-25";  // Given date
+
+        // Convert String to LocalDate
+        LocalDate date = LocalDate.parse(dateString);
+
+        // Get current time
+        LocalTime currentTime = LocalTime.now();
+
+        // Combine date and time
+        LocalDateTime dateTime = LocalDateTime.of(date, currentTime);
+
+        // Format the output
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = dateTime.format(formatter);
+
+        // Print result
+        System.out.println("Updated DateTime: " + formattedDateTime);
+    }
+}
+
 }
 }
 }
