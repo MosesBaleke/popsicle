@@ -736,6 +736,16 @@ source ~/.bashrc
 }
 dnf install -y java-17-amazon-corretto wget
 
+
+
+CREATE TRIGGER set_column_same_as_id
+BEFORE INSERT ON your_table
+FOR EACH ROW
+BEGIN
+    SET NEW.your_column = NEW.id;
+END;
+
+
 }
 }
 }
