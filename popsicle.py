@@ -777,7 +777,7 @@ public class DateTimeExample {
         System.out.println("Updated DateTime: " + formattedDateTime);
     }
 }
-
+   Region region = new DefaultAwsRegionProviderChain().getRegion();
 }
 }
 }
