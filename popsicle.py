@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+hi from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.testclient import TestClient
 from starlette.requests import Request as StarletteRequest
@@ -777,7 +777,30 @@ public class DateTimeExample {
         System.out.println("Updated DateTime: " + formattedDateTime);
     }
 }
-   Region region = new DefaultAwsRegionProviderChain().getRegion();
+
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain;
+
+public class AwsRegionDetector {
+    public static void main(String[] args) {
+        Region region;
+        try {
+            region = new DefaultAwsRegionProviderChain().getRegion();
+            if (region == null) {
+                // Fallback to a default
+                region = Region.US_EAST_1;
+            }
+        } catch (Exception e) {
+            // Fallback in case of error
+            region = Region.US_EAST_1;
+        }
+
+        System.out.println("Using AWS region: " + region.id());
+    }
+}
+
+
+
 }
 }
 }
