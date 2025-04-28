@@ -798,7 +798,22 @@ public class AwsRegionDetector {
         System.out.println("Using AWS region: " + region.id());
     }
 }
+import boto3
 
+# Create a boto3 client
+autoscaling_client = boto3.client('autoscaling')
+
+# Update the Auto Scaling Group
+response = autoscaling_client.update_auto_scaling_group(
+    AutoScalingGroupName='your-auto-scaling-group-name',
+    MinSize=2,
+    MaxSize=5,
+    DesiredCapacity=3,
+    HealthCheckType='EC2',
+    HealthCheckGracePeriod=300
+)
+
+print("Update response:", response)
 
 
 }
