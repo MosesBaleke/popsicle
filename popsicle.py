@@ -815,7 +815,9 @@ response = autoscaling_client.update_auto_scaling_group(
 
 print("Update response:", response)
 
+parent_node_id = "abc123-def456-xyz789"
 
+upload_url = f"{ALFRESCO_URL}/api/-default-/public/alfresco/versions/1/nodes/{parent_node_id}/children"
 }
 }
 }
