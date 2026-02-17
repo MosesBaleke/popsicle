@@ -1,3 +1,51 @@
+metadata_url = f"{ALFRESCO_URL}/api/-default-/public/alfresco/versions/1/nodes/{node_id}"
+
+payload = {
+    "name": "renamed_file.pdf",
+    "properties": {
+        "cm:title": "Updated Title",
+        "cm:description": "New description"
+    }
+}
+
+response = requests.put(
+    metadata_url,
+    auth=HTTPBasicAuth(USERNAME, PASSWORD),
+    json=payload
+)
+
+print(response.json())
+
+metadata_url = f"{ALFRESCO_URL}/api/-default-/public/alfresco/versions/1/nodes/{node_id}"
+
+payload = {
+    "name": "renamed_file.pdf",
+    "properties": {
+        "cm:title": "Updated Title",
+        "cm:description": "New description"
+    }
+}
+
+response = requests.put(
+    metadata_url,
+    auth=HTTPBasicAuth(USERNAME, PASSWORD),
+    json=payload
+)
+
+print(response.json())
+params = {
+    "majorVersion": "true",
+    "comment": "Updated document via API"
+}
+
+response = requests.put(
+    update_url,
+    auth=HTTPBasicAuth(USERNAME, PASSWORD),
+    headers={"Content-Type": "application/octet-stream"},
+    params=params,
+    data=file_data
+)
+
 hi from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from starlette.testclient import TestClient
